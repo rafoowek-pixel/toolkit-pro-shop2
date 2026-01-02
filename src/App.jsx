@@ -304,7 +304,7 @@ export default function FlexiBitBundleLandingPage() {
           </p>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '30px', marginTop: '50px' }}>
-            <button onClick={() => setShowOrderForm(true)} style={{
+            <button onClick={() => window.location.href = 'https://buy.stripe.com/00wbIU2Au75P3jl3BHbwk00'} style={{
               padding: '20px 50px', fontSize: '18px', fontWeight: 'bold', letterSpacing: '3px',
               background: 'linear-gradient(135deg, #ff6600 0%, #ff8800 100%)', border: 'none', color: '#000',
               cursor: 'pointer', fontFamily: "'Bebas Neue', sans-serif", boxShadow: '0 10px 40px rgba(255,100,0,0.4)'
@@ -385,7 +385,7 @@ export default function FlexiBitBundleLandingPage() {
           <div style={{ fontSize: '72px', fontWeight: 'bold', lineHeight: 1, marginBottom: '20px' }}>50 <span style={{ fontSize: '36px', color: '#ff6600' }}>zł</span></div>
           <div style={{ display: 'inline-block', background: '#4CAF50', color: '#fff', padding: '10px 30px', fontSize: '18px', letterSpacing: '2px', fontFamily: "'Roboto Condensed', sans-serif", marginBottom: '20px' }}>OSZCZĘDZASZ 33,50 zł!</div>
           <br />
-          <button onClick={() => setShowOrderForm(true)} style={{ marginTop: '20px', padding: '20px 60px', fontSize: '18px', fontWeight: 'bold', letterSpacing: '3px', background: 'linear-gradient(135deg, #ff6600 0%, #ff8800 100%)', border: 'none', color: '#000', cursor: 'pointer', fontFamily: "'Bebas Neue', sans-serif", boxShadow: '0 10px 30px rgba(255,100,0,0.3)' }}>
+          <button onClick={() => window.location.href = 'https://buy.stripe.com/00wbIU2Au75P3jl3BHbwk00'} style={{ marginTop: '20px', padding: '20px 60px', fontSize: '18px', fontWeight: 'bold', letterSpacing: '3px', background: 'linear-gradient(135deg, #ff6600 0%, #ff8800 100%)', border: 'none', color: '#000', cursor: 'pointer', fontFamily: "'Bebas Neue', sans-serif", boxShadow: '0 10px 30px rgba(255,100,0,0.3)' }}>
             ZAMÓW TERAZ
           </button>
         </div>
@@ -428,7 +428,7 @@ export default function FlexiBitBundleLandingPage() {
           <div style={{ fontSize: '72px', fontWeight: 'bold', color: '#fff', lineHeight: 1 }}>50 <span style={{ fontSize: '36px', color: '#ff6600' }}>zł</span></div>
           <div style={{ background: '#4CAF50', color: '#fff', padding: '10px 20px', fontSize: '16px', fontWeight: 'bold', fontFamily: "'Roboto Condensed', sans-serif" }}>-40%</div>
         </div>
-        <button onClick={() => setShowOrderForm(true)} style={{ padding: '25px 80px', fontSize: '24px', fontWeight: 'bold', letterSpacing: '4px', background: 'linear-gradient(135deg, #ff6600 0%, #ff8800 100%)', border: 'none', color: '#000', cursor: 'pointer', fontFamily: "'Bebas Neue', sans-serif", boxShadow: '0 15px 50px rgba(255,100,0,0.5)' }}>
+        <button onClick={() => window.location.href = 'https://buy.stripe.com/00wbIU2Au75P3jl3BHbwk00'} style={{ padding: '25px 80px', fontSize: '24px', fontWeight: 'bold', letterSpacing: '4px', background: 'linear-gradient(135deg, #ff6600 0%, #ff8800 100%)', border: 'none', color: '#000', cursor: 'pointer', fontFamily: "'Bebas Neue', sans-serif", boxShadow: '0 15px 50px rgba(255,100,0,0.5)' }}>
           ZAMÓW ZESTAW — 50 ZŁ
         </button>
         <div style={{ marginTop: '30px', fontSize: '14px', color: '#666', fontFamily: "'Roboto Condensed', sans-serif", letterSpacing: '2px' }}>
