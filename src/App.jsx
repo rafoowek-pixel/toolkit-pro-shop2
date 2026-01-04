@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 
 export default function FlexiBitBundleLandingPage() {
@@ -69,7 +68,51 @@ export default function FlexiBitBundleLandingPage() {
   };
 
   const openPackomatSelector = () => {
-    window.open('https://inpost.pl/znajdz-paczkomat', '_blank');
+    // Załaduj skrypty InPost jeśli jeszcze nie załadowane
+    const loadInpostWidget = () => {
+      return new Promise((resolve) => {
+        if (window.easyPack) {
+          resolve();
+          return;
+        }
+        
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://geowidget.easypack24.net/css/easypack.css';
+        document.head.appendChild(link);
+
+        const script = document.createElement('script');
+        script.src = 'https://geowidget.easypack24.net/js/sdk-for-javascript.js';
+        script.onload = () => {
+          setTimeout(resolve, 500);
+        };
+        document.body.appendChild(script);
+      });
+    };
+
+    loadInpostWidget().then(() => {
+      if (window.easyPack) {
+        window.easyPack.init({
+          defaultLocale: 'pl',
+          mapType: 'osm',
+          searchType: 'osm',
+          points: {
+            types: ['parcel_locker']
+          },
+          map: {
+            initialTypes: ['parcel_locker']
+          }
+        });
+        window.easyPack.modalMap(function(point, modal) {
+          setSelectedPaczkomat(point.name + ' - ' + point.address.line1 + ', ' + point.address.line2);
+          modal.closeModal();
+        }, { width: 600, height: 500 });
+      } else {
+        // Fallback - otwórz stronę InPost
+        window.open('https://inpost.pl/znajdz-paczkomat', '_blank');
+        alert('Znajdź paczkomat na mapie i wpisz jego nazwę (np. KRA123M)');
+      }
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -229,27 +272,37 @@ export default function FlexiBitBundleLandingPage() {
 
                     {formData.courier === 'inpost-paczkomat' && (
                       <div style={{ marginTop: '12px' }}>
-                        <label style={labelStyle}>Nazwa/numer Paczkomatu *</label>
-                        <div style={{ display: 'flex', gap: '8px' }}>
-                          <input 
-                            type="text" 
-                            value={selectedPaczkomat || ''} 
-                            onChange={(e) => setSelectedPaczkomat(e.target.value)}
-                            placeholder="np. KRA123M lub Kraków Galeria Krakowska"
-                            style={{ ...inputStyle, flex: 1 }}
-                            required
-                          />
-                          <button 
-                            type="button" 
-                            onClick={openPackomatSelector}
-                            style={{ padding: '14px 16px', background: '#ff6600', border: 'none', borderRadius: '8px', color: '#000', cursor: 'pointer', fontFamily: "'Roboto Condensed', sans-serif", fontSize: '12px', fontWeight: 'bold', whiteSpace: 'nowrap' }}
-                          >
-                            🔍 MAPA
-                          </button>
-                        </div>
-                        <p style={{ fontSize: '10px', color: '#888', marginTop: '6px', fontFamily: "'Roboto Condensed', sans-serif" }}>
-                          Kliknij "MAPA" aby znaleźć najbliższy Paczkomat i skopiuj jego nazwę
-                        </p>
+                        <button 
+                          type="button" 
+                          onClick={openPackomatSelector}
+                          style={{ 
+                            width: '100%', 
+                            padding: '16px', 
+                            background: selectedPaczkomat ? 'rgba(76, 175, 80, 0.15)' : 'rgba(255,100,0,0.1)', 
+                            border: `2px dashed ${selectedPaczkomat ? '#4CAF50' : '#ff6600'}`, 
+                            borderRadius: '10px', 
+                            color: selectedPaczkomat ? '#4CAF50' : '#ff6600', 
+                            cursor: 'pointer', 
+                            fontFamily: "'Roboto Condensed', sans-serif", 
+                            fontSize: '14px',
+                            textAlign: 'center',
+                            transition: 'all 0.3s ease'
+                          }}
+                        >
+                          {selectedPaczkomat ? (
+                            <div>
+                              <div style={{ fontSize: '18px', marginBottom: '4px' }}>✓</div>
+                              <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>{selectedPaczkomat}</div>
+                              <div style={{ fontSize: '11px', opacity: 0.7 }}>Kliknij aby zmienić</div>
+                            </div>
+                          ) : (
+                            <div>
+                              <div style={{ fontSize: '24px', marginBottom: '8px' }}>📍</div>
+                              <div style={{ fontWeight: 'bold' }}>WYBIERZ PACZKOMAT Z MAPY</div>
+                              <div style={{ fontSize: '11px', opacity: 0.7, marginTop: '4px' }}>Kliknij aby otworzyć mapę</div>
+                            </div>
+                          )}
+                        </button>
                       </div>
                     )}
                   </div>
@@ -483,3 +536,4 @@ export default function FlexiBitBundleLandingPage() {
     </div>
   );
 }
+
