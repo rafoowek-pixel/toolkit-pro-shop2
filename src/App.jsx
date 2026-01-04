@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 
 export default function FlexiBitBundleLandingPage() {
@@ -6,7 +7,7 @@ export default function FlexiBitBundleLandingPage() {
   const [scrollY, setScrollY] = useState(0);
   const [visibleSections, setVisibleSections] = useState({});
   const [showOrderForm, setShowOrderForm] = useState(false);
-  const [selectedPaczkomat, setSelectedPaczkomat] = useState(null);
+  const [selectedPaczkomat, setSelectedPaczkomat] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -63,48 +64,18 @@ export default function FlexiBitBundleLandingPage() {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     if (name === 'courier' && value !== 'inpost-paczkomat') {
-      setSelectedPaczkomat(null);
+      setSelectedPaczkomat('');
     }
   };
 
   const openPackomatSelector = () => {
-    if (!document.getElementById('inpost-geowidget-script')) {
-      const script = document.createElement('script');
-      script.id = 'inpost-geowidget-script';
-      script.src = 'https://geowidget.inpost.pl/inpost-geowidget.js';
-      script.async = true;
-      document.body.appendChild(script);
-
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = 'https://geowidget.inpost.pl/inpost-geowidget.css';
-      document.head.appendChild(link);
-
-      script.onload = () => setTimeout(() => openModal(), 300);
-    } else {
-      openModal();
-    }
-
-    function openModal() {
-      if (window.easyPack) {
-        window.easyPack.init({
-          mapType: 'osm',
-          searchType: 'osm',
-          points: { types: ['parcel_locker'] },
-          map: { initialTypes: ['parcel_locker'] }
-        });
-        window.easyPack.modalMap(function(point, modal) {
-          setSelectedPaczkomat(point);
-          modal.closeModal();
-        }, { width: 500, height: 600 });
-      }
-    }
+    window.open('https://inpost.pl/znajdz-paczkomat', '_blank');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (selectedCourier?.requiresPaczkomat && !selectedPaczkomat) {
-      alert('Proszę wybrać Paczkomat z mapy');
+      alert('Proszę wpisać nazwę Paczkomatu');
       return;
     }
     setIsSubmitting(true);
@@ -115,7 +86,7 @@ export default function FlexiBitBundleLandingPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          paczkomat: selectedPaczkomat ? `${selectedPaczkomat.name} - ${selectedPaczkomat.address?.line1}, ${selectedPaczkomat.address?.line2}` : 'Nie dotyczy',
+          paczkomat: selectedPaczkomat || 'Nie dotyczy',
           wybranyKurier: selectedCourier?.name,
           produkt: 'Zestaw TOOLKIT PRO - Elastyczny przedłużacz + Adaptery nasadkowe',
           dataZamowienia: new Date().toLocaleString('pl-PL')
@@ -258,23 +229,27 @@ export default function FlexiBitBundleLandingPage() {
 
                     {formData.courier === 'inpost-paczkomat' && (
                       <div style={{ marginTop: '12px' }}>
-                        <button type="button" onClick={openPackomatSelector} style={{ width: '100%', padding: '14px 16px', background: selectedPaczkomat ? 'rgba(76, 175, 80, 0.15)' : 'rgba(255,100,0,0.08)', border: `2px dashed ${selectedPaczkomat ? '#4CAF50' : '#ff6600'}`, borderRadius: '10px', color: selectedPaczkomat ? '#4CAF50' : '#ff6600', cursor: 'pointer', fontFamily: "'Roboto Condensed', sans-serif", fontSize: '13px', textAlign: 'left' }}>
-                          {selectedPaczkomat ? (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                              <span style={{ fontSize: '22px' }}>✓</span>
-                              <div style={{ flex: 1 }}>
-                                <div style={{ fontWeight: 'bold', marginBottom: '2px' }}>{selectedPaczkomat.name}</div>
-                                <div style={{ fontSize: '11px', opacity: 0.8 }}>{selectedPaczkomat.address?.line1}, {selectedPaczkomat.address?.line2}</div>
-                              </div>
-                              <span style={{ fontSize: '11px', opacity: 0.7 }}>Zmień →</span>
-                            </div>
-                          ) : (
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                              <span style={{ fontSize: '18px' }}>📍</span>
-                              <span>Kliknij aby wybrać Paczkomat z mapy</span>
-                            </div>
-                          )}
-                        </button>
+                        <label style={labelStyle}>Nazwa/numer Paczkomatu *</label>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <input 
+                            type="text" 
+                            value={selectedPaczkomat || ''} 
+                            onChange={(e) => setSelectedPaczkomat(e.target.value)}
+                            placeholder="np. KRA123M lub Kraków Galeria Krakowska"
+                            style={{ ...inputStyle, flex: 1 }}
+                            required
+                          />
+                          <button 
+                            type="button" 
+                            onClick={openPackomatSelector}
+                            style={{ padding: '14px 16px', background: '#ff6600', border: 'none', borderRadius: '8px', color: '#000', cursor: 'pointer', fontFamily: "'Roboto Condensed', sans-serif", fontSize: '12px', fontWeight: 'bold', whiteSpace: 'nowrap' }}
+                          >
+                            🔍 MAPA
+                          </button>
+                        </div>
+                        <p style={{ fontSize: '10px', color: '#888', marginTop: '6px', fontFamily: "'Roboto Condensed', sans-serif" }}>
+                          Kliknij "MAPA" aby znaleźć najbliższy Paczkomat i skopiuj jego nazwę
+                        </p>
                       </div>
                     )}
                   </div>
@@ -315,7 +290,7 @@ export default function FlexiBitBundleLandingPage() {
                   <div style={{ fontFamily: "'Roboto Condensed', sans-serif", fontSize: '12px', color: '#888', marginBottom: '4px' }}>Do zapłaty:</div>
                   <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#ff6600' }}>{totalPrice} zł</div>
                 </div>
-                <button onClick={() => { closeForm(); setFormData({ name: '', email: '', phone: '', street: '', city: '', zipCode: '', courier: '' }); setSelectedPaczkomat(null); }} style={{ padding: '10px 30px', fontSize: '13px', background: 'transparent', border: '2px solid #ff6600', borderRadius: '8px', color: '#ff6600', cursor: 'pointer', fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '2px' }}>
+                <button onClick={() => { closeForm(); setFormData({ name: '', email: '', phone: '', street: '', city: '', zipCode: '', courier: '' }); setSelectedPaczkomat(''); }} style={{ padding: '10px 30px', fontSize: '13px', background: 'transparent', border: '2px solid #ff6600', borderRadius: '8px', color: '#ff6600', cursor: 'pointer', fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '2px' }}>
                   ZAMKNIJ
                 </button>
               </div>
