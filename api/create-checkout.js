@@ -1,9 +1,6 @@
-const Stripe = require('stripe');
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+import Stripe from 'stripe';
 
 export default async function handler(req, res) {
-  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -17,6 +14,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     const { name, email, phone, street, city, zipCode, courier, paczkomat } = req.body;
 
     const session = await stripe.checkout.sessions.create({
@@ -29,7 +27,7 @@ export default async function handler(req, res) {
               name: 'Zestaw TOOLKIT PRO',
               description: 'Elastyczny przedłużacz 290mm + 3 adaptery nasadkowe',
             },
-            unit_amount: 5000, // 50 zł w groszach
+            unit_amount: 5000,
           },
           quantity: 1,
         },
@@ -39,7 +37,7 @@ export default async function handler(req, res) {
             product_data: {
               name: 'Dostawa - ' + courier,
             },
-            unit_amount: 1200, // 12 zł w groszach
+            unit_amount: 1200,
           },
           quantity: 1,
         },
@@ -63,7 +61,7 @@ export default async function handler(req, res) {
 
     res.status(200).json({ url: session.url });
   } catch (error) {
-    console.error('Error creating checkout session:', error);
+    console.error('Error:', error);
     res.status(500).json({ error: error.message });
   }
 }
