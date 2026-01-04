@@ -1,8 +1,4 @@
-const Stripe = require('stripe');
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-const googleSheetUrl = process.env.GOOGLE_SHEET_URL;
+import Stripe from 'stripe';
 
 export const config = {
   api: {
@@ -23,6 +19,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const googleSheetUrl = process.env.GOOGLE_SHEET_URL;
+
   const buf = await buffer(req);
   const sig = req.headers['stripe-signature'];
 
@@ -39,7 +39,6 @@ export default async function handler(req, res) {
     const session = event.data.object;
     const metadata = session.metadata;
 
-    // Wyślij dane do Google Sheets
     try {
       const orderData = {
         data: new Date().toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw' }),
@@ -58,7 +57,7 @@ export default async function handler(req, res) {
         body: JSON.stringify(orderData)
       });
 
-      console.log('Order saved to Google Sheets:', orderData);
+      console.log('Order saved:', orderData);
     } catch (error) {
       console.error('Error saving to Google Sheets:', error);
     }
