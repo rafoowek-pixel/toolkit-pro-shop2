@@ -21,11 +21,11 @@ export default function FlexiBitBundleLandingPage() {
 
   const couriers = [
     { id: 'inpost-paczkomat', name: 'InPost Paczkomat', price: 12, time: '1-2 dni robocze', requiresPaczkomat: true },
-    { id: 'inpost-kurier', name: 'InPost Kurier', price: 16, time: '1-2 dni robocze', requiresPaczkomat: false },
-    { id: 'dpd', name: 'DPD Kurier', price: 18, time: '1-2 dni robocze', requiresPaczkomat: false },
-    { id: 'dhl', name: 'DHL Kurier', price: 20, time: '1-2 dni robocze', requiresPaczkomat: false },
-    { id: 'poczta', name: 'Poczta Polska', price: 14, time: '2-4 dni robocze', requiresPaczkomat: false },
-    { id: 'orlen', name: 'Orlen Paczka', price: 11, time: '1-3 dni robocze', requiresPaczkomat: false }
+    { id: 'inpost-kurier', name: 'InPost Kurier', price: 12, time: '1-2 dni robocze', requiresPaczkomat: false },
+    { id: 'dpd', name: 'DPD Kurier', price: 12, time: '1-2 dni robocze', requiresPaczkomat: false },
+    { id: 'dhl', name: 'DHL Kurier', price: 12, time: '1-2 dni robocze', requiresPaczkomat: false },
+    { id: 'poczta', name: 'Poczta Polska', price: 12, time: '2-4 dni robocze', requiresPaczkomat: false },
+    { id: 'orlen', name: 'Orlen Paczka', price: 12, time: '1-3 dni robocze', requiresPaczkomat: false }
   ];
 
   const basePrice = 50;
@@ -110,25 +110,22 @@ export default function FlexiBitBundleLandingPage() {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('https://formspree.io/f/mpqwqqwn', {
+      await fetch('https://formspree.io/f/mpqwqqwn', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
           paczkomat: selectedPaczkomat ? `${selectedPaczkomat.name} - ${selectedPaczkomat.address?.line1}, ${selectedPaczkomat.address?.line2}` : 'Nie dotyczy',
           wybranyKurier: selectedCourier?.name,
-          kosztDostawy: selectedCourier?.price + ' zł',
-          cenaProduktu: basePrice + ' zł',
-          SUMA: totalPrice + ' zł',
           produkt: 'Zestaw TOOLKIT PRO - Elastyczny przedłużacz + Adaptery nasadkowe',
           dataZamowienia: new Date().toLocaleString('pl-PL')
         })
       });
-      if (response.ok) setOrderSubmitted(true);
+      window.location.href = 'https://buy.stripe.com/00wbIU2Au75P3jl3BHbwk00';
     } catch (error) {
       console.error('Błąd wysyłki:', error);
+      window.location.href = 'https://buy.stripe.com/00wbIU2Au75P3jl3BHbwk00';
     }
-    setIsSubmitting(false);
   };
 
   const openForm = () => {
@@ -371,7 +368,7 @@ export default function FlexiBitBundleLandingPage() {
             <span style={{ fontSize: 'clamp(42px, 14vw, 68px)', fontWeight: 'bold', color: '#fff', textShadow: '0 0 30px rgba(255,100,0,0.3)' }}>50 <span style={{ fontSize: 'clamp(22px, 7vw, 34px)', color: '#ff6600' }}>zł</span></span>
           </div>
           <div style={{ display: 'inline-block', background: '#4CAF50', color: '#fff', padding: '6px 18px', fontSize: 'clamp(11px, 3vw, 14px)', letterSpacing: '1px', fontFamily: "'Roboto Condensed', sans-serif", borderRadius: '4px' }}>
-            + KOSZT DOSTAWY OD 11 ZŁ
+            + DOSTAWA 12 ZŁ
           </div>
         </div>
 
@@ -481,7 +478,7 @@ export default function FlexiBitBundleLandingPage() {
         </div>
 
         <button onClick={openForm} style={{ padding: 'clamp(16px, 5vw, 28px) clamp(40px, 12vw, 90px)', fontSize: 'clamp(16px, 5vw, 26px)', fontWeight: 'bold', letterSpacing: '3px', background: 'linear-gradient(135deg, #ff6600 0%, #ff8800 100%)', border: 'none', borderRadius: '10px', color: '#000', cursor: 'pointer', fontFamily: "'Bebas Neue', sans-serif", boxShadow: '0 20px 55px rgba(255,100,0,0.5)' }}>
-          ZAMÓW — OD 61 ZŁ
+          ZAMÓW — 62 ZŁ
         </button>
         
         <div style={{ marginTop: '20px', fontSize: 'clamp(10px, 3vw, 13px)', color: '#666', fontFamily: "'Roboto Condensed', sans-serif", letterSpacing: '1px' }}>
