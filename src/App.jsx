@@ -118,27 +118,34 @@ export default function FlexiBitBundleLandingPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (selectedCourier?.requiresPaczkomat && !selectedPaczkomat) {
-      alert('Proszę wpisać nazwę Paczkomatu');
+      alert('Proszę wybrać Paczkomat z mapy');
       return;
     }
     setIsSubmitting(true);
     
     try {
-      await fetch('https://formspree.io/f/mpqwqqwn', {
+      const response = await fetch('/api/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
           paczkomat: selectedPaczkomat || 'Nie dotyczy',
-          wybranyKurier: selectedCourier?.name,
-          produkt: 'Zestaw TOOLKIT PRO - Elastyczny przedłużacz + Adaptery nasadkowe',
-          dataZamowienia: new Date().toLocaleString('pl-PL')
+          courier: selectedCourier?.name
         })
       });
-      window.location.href = 'https://buy.stripe.com/00wbIU2Au75P3jl3BHbwk00';
+      
+      const data = await response.json();
+      
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Błąd tworzenia płatności. Spróbuj ponownie.');
+        setIsSubmitting(false);
+      }
     } catch (error) {
-      console.error('Błąd wysyłki:', error);
-      window.location.href = 'https://buy.stripe.com/00wbIU2Au75P3jl3BHbwk00';
+      console.error('Błąd:', error);
+      alert('Błąd połączenia. Spróbuj ponownie.');
+      setIsSubmitting(false);
     }
   };
 
@@ -536,4 +543,3 @@ export default function FlexiBitBundleLandingPage() {
     </div>
   );
 }
-
